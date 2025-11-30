@@ -22,14 +22,9 @@ if (isset($_POST['checkout'])) {
     } else {
         try {
             $stmt = $pdo->prepare("INSERT INTO orders (user_id, total, status, delivery_method, delivery_address, comment, created_at) 
-                                   VALUES (?, ?, 'новый', 'courier', ?, ?, NOW())");
+                                   VALUES (?, ?, 'new', 'courier', ?, ?, NOW())");
             $stmt->execute([is_logged_in() ? $_SESSION['user_id'] : null, $total, $address, $comment]);
             $order_id = $pdo->lastInsertId();
-
-            echo $order_id;
-            echo $item['id']; 
-            echo $item['quantity'];
-            echo $item['price'];
 
             $stmt = $pdo->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
             foreach ($items as $item) {
@@ -54,7 +49,7 @@ if (isset($_POST['checkout'])) {
     <title>Оформление заказа — ТД Синергия</title>
     <link rel="stylesheet" href="../style/normalize.css">
     <link rel="stylesheet" href="../style/style.css">
-
+    
 </head>
 <body>
     <?php include("../blocks/header.php"); ?>

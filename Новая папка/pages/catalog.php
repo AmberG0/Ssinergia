@@ -1,19 +1,4 @@
-<?php require_once '../inc/functions.php'; 
-
-
-        if (isset($_POST['add_to_cart'])) {
-            $id = (int)($_POST['product_id'] ?? 0);
-            if ($id > 0) {
-                add_to_cart($id);
-                echo '<script>
-                    alert("Товар добавлен в корзину!");
-                    // Можно обновить счётчик без перезагрузки, но пока просто алерт
-                </script>';
-            }
-        }
-
-
-?>
+<?php require_once '../inc/functions.php'; ?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -65,29 +50,29 @@
 
                 <!-- Основная сетка товаров -->
                 <div class="catalog_products">
-                    <? $stmt = $pdo->query("SELECT id, name, price, image FROM products ORDER BY id DESC LIMIT 12");
-                    while ($p = $stmt->fetch()): ?>
-                        <form method="POST" class="card_product">
-                            <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                            <div class="product_first">
-                                <img src="../uploads/<?= $p['image'] ?: 'no-photo.jpg' ?>" alt="<?= escape($p['name']) ?>">
+                    <a href="product.php?id=1" class="card_product">
+                        <div class="product_first"><img src="../image/flange.png" alt=""></div>
+                        <div class="product_second">
+                            <p>Фланец стальной плоский ГОСТ 33259-2015</p>
+                        </div>
+                        <div class="product_last">
+                            <div class="rating">
+                                <img src="../image/star.svg" alt="">
+                                <h1>4.7</h1>
                             </div>
-                            <div class="product_second">
-                                <p><?= escape($p['name']) ?></p>
-                            </div>
-                            <div class="product_last">
-                                <div class="rating">
-                                    <img src="../image/star.svg" alt="">
-                                    <h1>4.7</h1>
-                                </div>
-                                <h1><?= number_format($p['price'], 0, '', ' ') ?> ₽</h1>
-                            </div>
-                            <button type="submit" name="add_to_cart" class="add_to_cart_btn">
-                                В корзину
-                            </button>
-                        </form>
-                    <?php endwhile; ?>
-                   
+                            <h1>36378₽</h1>
+                        </div>
+                    </a>
+                    <?php for($i = 0; $i < 11; $i++): ?>
+                    <a href="#" class="card_product">
+                        <div class="product_first"><img src="../image/flange.png" alt=""></div>
+                        <div class="product_second"><p>Фланец стальной плоский ГОСТ 33259-2015</p></div>
+                        <div class="product_last">
+                            <div class="rating"><img src="../image/star.svg" alt=""><h1>4.7</h1></div>
+                            <h1>36378₽</h1>
+                        </div>
+                    </a>
+                    <?php endfor; ?>
 
                     <!-- Пагинация -->
                     <div class="pagination">

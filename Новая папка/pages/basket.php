@@ -4,11 +4,11 @@ require_once '../inc/functions.php';
 if (!is_logged_in()) {
     redirect('login.php');
 }
-
 $cart_items = get_cart_items($pdo);
 $total = get_cart_total($pdo);
 
-// Обработка действий
+// Обработка действий (переделать для связи с БД)
+
 if ($_POST['action'] ?? '' === 'update') {
     $id = (int)($_POST['product_id'] ?? 0);
     $qty = (int)($_POST['quantity'] ?? 1);
@@ -18,6 +18,9 @@ if ($_POST['action'] ?? '' === 'update') {
 
 if ($_POST['action'] ?? '' === 'remove') {
     $id = (int)($_POST['product_id'] ?? 0);
+    echo '<script>
+                //     alert("грузит");
+                // </script>';
     remove_from_cart($id);
     redirect('basket.php');
 }
@@ -37,11 +40,9 @@ if ($_POST['action'] ?? '' === 'remove') {
     <div id="main_container">
         <?php include("../blocks/header.php"); ?>
 
-        <div class="page_title">Корзина</div>
-
         <?php if (empty($cart_items)): ?>
             <div class="empty_basket">
-                <img src="../image/basket_big.svg" alt="Пустая корзина">
+                <img src="../image/basket_page.png" alt="Пустая корзина">
                 <h2>Корзина пуста</h2>
                 <p>Добавьте товары из <a href="main.php">каталога</a></p>
             </div>
@@ -49,8 +50,9 @@ if ($_POST['action'] ?? '' === 'remove') {
             <div class="basket_wrapper">
                 <div class="basket_items">
                     <?php foreach ($cart_items as $item): ?>
+                        
                         <div class="basket_item">
-                            <img src="../uploads/<?= $item['image'] ?? 'flange.png' ?>" alt="<?= escape($item['name']) ?>">
+                            <img src="../image/<?= $item['image'] ?? 'flange.png' ?>" alt="<?= escape($item['name']) ?>">
                             
                             <div class="item_info">
                                 <h3><?= escape($item['name']) ?></h3>
@@ -73,7 +75,7 @@ if ($_POST['action'] ?? '' === 'remove') {
                             <div class="item_price"><?= number_format($item['subtotal'], 0, '', ' ') ?> ₽</div>
 
                             <form method="POST">
-                                <input type="hidden" name="product_id" value="<?= $item['id'] ?>">
+                                <input type="hidden" name="product_id" value="<?= $item['id'];?>">
                                 <input type="hidden" name="action" value="remove">
                                 <button type="submit" class="item_remove">×</button>
                             </form>

@@ -305,7 +305,7 @@ body {
 }
 
 .card_categories img {
-    width: 150px;
+    width: 250px;
 }
 
 /* товары на главной */
@@ -640,8 +640,8 @@ body {
 }
 
 .add_to_cart_btn {
-    position: absolute;
-    bottom: 15px;
+    position: relative;
+    bottom: 0px;
     left: 50%;
     transform: translateX(-50%);
     padding: 10px 25px;
@@ -663,7 +663,9 @@ body {
 .card_product:hover .add_to_cart_btn {
     opacity: 1;
 }
-
+a{
+    text-decoration: none;
+}
 /* Адаптив ЛК*/
 @media (max-width: 992px) {
     .lk_container {
@@ -892,7 +894,7 @@ body {
 
 .empty_basket img {
     width: 150px;
-    margin-bottom: 30px;
+    margin: 0 auto;
 }
 
 .empty_basket h2 {
@@ -1824,8 +1826,8 @@ body {
     margin-bottom: 20px;
 }
 
+/* оформление */
 
-/* окно оформления */
 
         .checkout_big_card {
             max-width: 1100px;

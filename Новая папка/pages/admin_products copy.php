@@ -2,75 +2,77 @@
 require_once '../inc/functions.php';
 require_admin();
 
-// === ОБРАБОТКА ===
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
+// === ДОБАВЛЕНИЕ ТОВАРА ===
+if ($_POST['action'] ?? '' === 'add') {
+    $name = trim($_POST['name']);
+    $price = (float)$_POST['price'];
+    $quantity = (int)$_POST['quantity'];
+    $du = $_POST['du'] ?? '';
+    $material = $_POST['material'] ?? '';
 
-    // ДОБАВЛЕНИЕ
-    if ($action === 'add') {
-        $name = trim($_POST['name']);
-        $price = (float)$_POST['price'];
-        $quantity = (int)$_POST['quantity'];
-        $du = $_POST['du'] ?? '';
-        $material = $_POST['material'] ?? '';
+    $image = '';
+    if (!empty($_FILES['photo']['name']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = "../uploads";
+        if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
 
-        $image = '';
-        if (!empty($_FILES['photo']['name'])) {
-            $ext = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-            $image = 'prod_' . time() . '.' . $ext;
-            move_uploaded_file($_FILES['photo']['tmp_name'], "../uploads/$image");
+        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($ext, $allowed)) {
+            $image = "product_" . time() . "_" . rand(100,999) . ".$ext";
+            move_uploaded_file($_FILES['photo']['tmp_name'], "$upload_dir/$image");
         }
-
-        $stmt = $pdo->prepare("INSERT INTO products (name, price, image, quantity, du, material) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $price, $image, $quantity, $du, $material]);
-
-        header("Location: admin_products.php?msg=Товар+добавлен!");
-        exit;
     }
 
-    // РЕДАКТИРОВАНИЕ
-    if ($action === 'edit') {
-        $id = (int)$_POST['id'];
-        $name = trim($_POST['name']);
-        $price = (float)$_POST['price'];
-        $quantity = (int)$_POST['quantity'];
-        $du = $_POST['du'] ?? '';
-        $material = $_POST['material'] ?? '';
-        $old_image = $_POST['old_image'] ?? '';
+    $stmt = $pdo->prepare("INSERT INTO products (name, price, image, quantity, du, material) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$name, $price, $image, $quantity, $du, $material]);
 
-        $image = $old_image;
-        if (!empty($_FILES['photo']['name'])) {
-            if ($old_image && file_exists("../uploads/$old_image")) {
-                unlink("../uploads/$old_image");
-            }
-            $ext = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-            $image = 'prod_' . time() . '.' . $ext;
-            move_uploaded_file($_FILES['photo']['tmp_name'], "../uploads/$image");
-        }
-
-        $stmt = $pdo->prepare("UPDATE products SET name=?, price=?, image=?, quantity=?, du=?, material=? WHERE id=?");
-        $stmt->execute([$name, $price, $image, $quantity, $du, $material, $id]);
-
-        header("Location: admin_products.php?msg=Товар+обновлён!");
-        exit;
-    }
-
-    // УДАЛЕНИЕ
-    if ($action === 'delete') {
-        $id = (int)$_POST['id'];
-        $stmt = $pdo->prepare("SELECT image FROM products WHERE id = ?");
-        $stmt->execute([$id]);
-        $image = $stmt->fetchColumn();
-        if ($image && file_exists("../uploads/$image")) unlink("../uploads/$image");
-
-        $pdo->prepare("DELETE FROM products WHERE id = ?")->execute([$id]);
-        header("Location: admin_products.php?msg=Товар+удалён!");
-        exit;
-    }
+    echo '<script>alert("Товар добавлен!"); location.reload();</script>';
+    exit;
 }
 
-// Сообщение и список товаров
-$msg = $_GET['msg'] ?? '';
+// === РЕДАКТИРОВАНИЕ ===
+if ($_POST['action'] ?? '' === 'edit') {
+    $id = (int)$_POST['id'];
+    $name = trim($_POST['name']);
+    $price = (float)$_POST['price'];
+    $quantity = (int)$_POST['quantity'];
+    $du = $_POST['du'] ?? '';
+    $material = $_POST['material'] ?? '';
+    $old_image = $_POST['old_image'] ?? '';
+
+    $image = $old_image;
+    if (!empty($_FILES['photo']['name']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        if ($old_image && file_exists("../uploads/$old_image")) {
+            unlink("../uploads/$old_image");
+        }
+        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($ext, $allowed)) {
+            $image = "product_" . time() . "_" . rand(100,999) . ".$ext";
+            move_uploaded_file($_FILES['photo']['tmp_name'], "../uploads/$image");
+        }
+    }
+
+    $stmt = $pdo->prepare("UPDATE products SET name=?, price=?, image=?, quantity=?, du=?, material=? WHERE id=?");
+    $stmt->execute([$name, $price, $image, $quantity, $du, $material, $id]);
+
+    echo '<script>alert("Товар обновлён!"); location.reload();</script>';
+    exit;
+}
+
+// === УДАЛЕНИЕ ===
+if ($_POST['action'] ?? '' === 'delete') {
+    $id = (int)$_POST['id'];
+    $stmt = $pdo->prepare("SELECT image FROM products WHERE id = ?");
+    $stmt->execute([$id]);
+    $image = $stmt->fetchColumn();
+    if ($image && file_exists("../uploads/$image")) unlink("../uploads/$image");
+
+    $pdo->prepare("DELETE FROM products WHERE id = ?")->execute([$id]);
+    echo '<script>alert("Товар удалён!"); location.reload();</script>';
+    exit;
+}
+
 $products = $pdo->query("SELECT * FROM products ORDER BY id DESC")->fetchAll();
 ?>
 
@@ -83,10 +85,6 @@ $products = $pdo->query("SELECT * FROM products ORDER BY id DESC")->fetchAll();
     <link rel="stylesheet" href="../style/style.css">
 </head>
 <body>
-    <?php if ($msg): ?>
-        <script>alert("<?= addslashes($msg) ?>")</script>
-    <?php endif; ?>
-
     <div id="admin_container">
         <aside class="admin_sidebar">
             <div class="admin_logo">
@@ -159,7 +157,7 @@ $products = $pdo->query("SELECT * FROM products ORDER BY id DESC")->fetchAll();
                 <input type="hidden" name="action" value="add">
                 <label>Название</label><input type="text" name="name" required>
                 <label>Цена</label><input type="number" step="0.01" name="price" required>
-                <label>Количество</label><input type="number" name="quantity" min="0" value="1">
+                <label>Количество</label><input type="number" name="quantity" value="1">
                 <label>Ду</label><input type="text" name="du">
                 <label>Материал</label><input type="text" name="material">
                 <label>Фото</label><input type="file" name="photo" accept="image/*">
@@ -179,7 +177,7 @@ $products = $pdo->query("SELECT * FROM products ORDER BY id DESC")->fetchAll();
                 <input type="hidden" name="old_image" value="${p.image || ''}">
                 <label>Название</label><input type="text" name="name" value="${escape(p.name)}" required>
                 <label>Цена</label><input type="number" step="0.01" name="price" value="${p.price}" required>
-                <label>Количество</label><input type="number" name="quantity" value="${p.quantity}" min="0">
+                <label>Количество</label><input type="number" name="quantity" value="${p.quantity}">
                 <label>Ду</label><input type="text" name="du" value="${p.du || ''}">
                 <label>Материал</label><input type="text" name="material" value="${p.material || ''}">
                 <label>Новое фото (оставь пустым)</label><input type="file" name="photo" accept="image/*">
