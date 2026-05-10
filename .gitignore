@@ -1,26 +1,19 @@
-```php
+```
 # Compiled and build artifacts
 *.pyc
-*.class
+__pycache__/
 *.o
-*.exe
-*.dll
-*.so
-*.a
 *.obj
-*.out
 dist/
 build/
 target/
 
 # Dependencies
-node_modules/
-venv/
 .venv/
-__pycache__/
-.mypy_cache/
-.pytest_cache/
-.gradle/
+venv/
+node_modules/
+.julia/
+.zig-cache/
 
 # Logs and temp files
 *.log
@@ -31,22 +24,26 @@ __pycache__/
 # Environment
 .env
 .env.local
-*.env.*
+.env.*
 
 # Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# System files
+# OS specific
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Testing and coverage
+.coverage
 coverage/
 htmlcov/
-.coverage
+.mypy_cache/
+.pytest_cache/
 
-# Compressed files
+# Compression files
 *.zip
 *.gz
 *.tar
