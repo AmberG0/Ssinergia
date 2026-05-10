@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор стоимости - СтройПрофи</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container header-content">
+        <div class="logo">
+            <span class="logo-icon">🏗️</span>
+            <div class="logo-text">
+                <h1>СТРОЙ<span>ПРОФИ</span></h1>
+                <p>Промышленное строительство</p>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.php">Главная</a></li>
+                <li><a href="services.php">Услуги</a></li>
+                <li><a href="calculator.html" class="active">Калькулятор</a></li>
+                <li><a href="contacts.php">Контакты</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <a href="tel:+74950000000" class="phone-link">+7 (495) 000-00-00</a>
+            <button class="btn btn-primary open-modal">Заказать звонок</button>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </div>
+</header>
+
+<main class="page-content">
+    <section class="page-header">
+        <div class="container">
+            <h1>Калькулятор строительных работ</h1>
+            <p>Рассчитайте предварительную стоимость вашего проекта онлайн</p>
+        </div>
+    </section>
+
+    <section class="calculator-section">
+        <div class="container">
+            <div class="calculator-wrapper">
+                <div class="calculator-form">
+                    <h2>Параметры расчета</h2>
+                    
+                    <div class="calc-step">
+                        <h3>1. Тип фундамента</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="foundation_type" value="tape" data-price="4500" checked>
+                                <span class="radio-custom"></span>
+                                Ленточный (4 500 ₽/м³)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="foundation_type" value="slab" data-price="5200">
+                                <span class="radio-custom"></span>
+                                Плитный (5 200 ₽/м²)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="foundation_type" value="pile" data-price="3800">
+                                <span class="radio-custom"></span>
+                                Свайный (3 800 ₽/шт)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="calc-step">
+                        <h3>2. Площадь фундамента (м²)</h3>
+                        <input type="number" id="foundation_area" class="calc-input" min="10" max="1000" value="100" step="1">
+                        <p class="calc-hint">Рекомендуем: 10-50 м² для гаража, 50-150 м² для дома</p>
+                    </div>
+
+                    <div class="calc-step">
+                        <h3>3. Материал стен</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="wall_material" value="brick" data-price="2800" checked>
+                                <span class="radio-custom"></span>
+                                Кирпич (2 800 ₽/м²)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="wall_material" value="gasblock" data-price="2200">
+                                <span class="radio-custom"></span>
+                                Газобетон (2 200 ₽/м²)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="wall_material" value="monolith" data-price="6500">
+                                <span class="radio-custom"></span>
+                                Монолит (6 500 ₽/м³)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="calc-step">
+                        <h3>4. Площадь стен (м²)</h3>
+                        <input type="number" id="wall_area" class="calc-input" min="20" max="2000" value="200" step="1">
+                        <p class="calc-hint">Пример: дом 10×10 м, высота 3 м = 120 м²</p>
+                    </div>
+
+                    <div class="calc-step">
+                        <h3>5. Тип кровли</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="roof_type" value="metal" data-price="1800" checked>
+                                <span class="radio-custom"></span>
+                                Металлочерепица (1 800 ₽/м²)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="roof_type" value="profsteel" data-price="1200">
+                                <span class="radio-custom"></span>
+                                Профнастил (1 200 ₽/м²)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="roof_type" value="soft" data-price="2500">
+                                <span class="radio-custom"></span>
+                                Мягкая кровля (2 500 ₽/м²)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="calc-step">
+                        <h3>6. Площадь кровли (м²)</h3>
+                        <input type="number" id="roof_area" class="calc-input" min="20" max="1000" value="120" step="1">
+                        <p class="calc-hint">Обычно на 10-20% больше площади дома</p>
+                    </div>
+
+                    <div class="calc-step">
+                        <h3>7. Дополнительные работы</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="extra_works" value="plaster" data-price="450">
+                                <span class="checkbox-custom"></span>
+                                Штукатурка стен (450 ₽/м²)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="extra_works" value="screed" data-price="600">
+                                <span class="checkbox-custom"></span>
+                                Стяжка пола (600 ₽/м²)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="extra_works" value="painting" data-price="350">
+                                <span class="checkbox-custom"></span>
+                                Малярные работы (350 ₽/м²)
+                            </label>
+                        </div>
+                    </div>
+
+                    <button id="calculateBtn" class="btn btn-primary btn-lg btn-block">Рассчитать стоимость</button>
+                </div>
+
+                <div class="calculator-result">
+                    <h2>Результат расчета</h2>
+                    <div class="result-summary">
+                        <div class="result-item">
+                            <span class="result-label">Фундамент:</span>
+                            <span class="result-value" id="foundation_cost">0 ₽</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Стены:</span>
+                            <span class="result-value" id="walls_cost">0 ₽</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Кровля:</span>
+                            <span class="result-value" id="roof_cost">0 ₽</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Доп. работы:</span>
+                            <span class="result-value" id="extras_cost">0 ₽</span>
+                        </div>
+                        <div class="result-total">
+                            <span class="total-label">Итого:</span>
+                            <span class="total-value" id="total_cost">0 ₽</span>
+                        </div>
+                    </div>
+                    <div class="result-note">
+                        <p>⚠️ Расчет является предварительным. Точную стоимость определит инженер после осмотра объекта.</p>
+                    </div>
+                    <button class="btn btn-outline btn-lg btn-block open-modal">Заказать точный расчет</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-content">
+        <div class="footer-col">
+            <h4>СТРОЙПРОФИ</h4>
+            <p>Лицензия СРО №12345 от 2020 г.</p>
+            <p>© 2023 Все права защищены</p>
+        </div>
+        <div class="footer-col">
+            <h4>Услуги</h4>
+            <ul>
+                <li><a href="services.php#foundation">Фундаментные работы</a></li>
+                <li><a href="services.php#walls">Возведение стен</a></li>
+                <li><a href="services.php#roof">Кровельные работы</a></li>
+                <li><a href="services.php#finish">Отделка</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакты</h4>
+            <p>г. Москва, ул. Строителей, д. 10</p>
+            <p>Email: info@stroyprofi.ru</p>
+            <p>Тел: +7 (495) 000-00-00</p>
+        </div>
+    </div>
+</footer>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Заказать расчет</h2>
+        <form id="callbackForm">
+            <div class="form-group">
+                <label for="name">Ваше имя</label>
+                <input type="text" id="name" name="name" required placeholder="Иван Иванов">
+            </div>
+            <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone" required placeholder="+7 (___) ___-__-__">
+            </div>
+            <div class="form-group">
+                <label for="comment">Комментарий</label>
+                <textarea id="comment" name="comment" rows="3" placeholder="Опишите ваш проект"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
