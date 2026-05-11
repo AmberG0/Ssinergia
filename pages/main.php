@@ -1,7 +1,13 @@
-<?php 
-require_once '../inc/functions.php'; 
-?>
+<? require_once '../inc/functions.php'; 
 
+if (isset($_POST['add_to_cart'])) {
+    $id = (int)($_POST['product_id'] ?? 0);
+    if ($id > 0) {
+        add_to_cart($id);
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -9,9 +15,8 @@ require_once '../inc/functions.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../style/normalize.css">
     <link rel="stylesheet" href="../style/style.css">
-    <title>СтройМастер — Главная</title>
+    <title>Главная страница</title>
     <style>
-        /* Hero секция со слайдером */
         .hero-section {
             display: flex;
             gap: 20px;
@@ -71,8 +76,6 @@ require_once '../inc/functions.php';
             line-height: 1.6;
             margin-bottom: 20px;
         }
-        
-        /* Центральный блок */
         .central-block {
             background: #f5f5f5;
             padding: 60px 40px;
@@ -92,9 +95,7 @@ require_once '../inc/functions.php';
             margin: 0 auto;
             line-height: 1.8;
         }
-        
-        /* Footer с 4 колонками */
-        #container_footer {
+        .footer-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 30px;
@@ -102,32 +103,31 @@ require_once '../inc/functions.php';
             background: #1A1A1A;
             color: white;
             margin-top: 60px;
+            border-radius: var(--radius-big) var(--radius-big) 0 0;
         }
-        #container_footer img {
+        .footer-grid img {
             height: 60px;
             margin-bottom: 20px;
         }
-        #container_footer h3 {
+        .footer-grid h3 {
             color: #FFD700;
             margin-bottom: 15px;
             font-size: 18px;
         }
-        #container_footer a {
+        .footer-grid a {
             color: white;
             text-decoration: none;
             display: block;
             margin-bottom: 10px;
             transition: color 0.3s;
         }
-        #container_footer a:hover {
+        .footer-grid a:hover {
             color: #FFD700;
         }
-        #container_footer p {
+        .footer-grid p {
             margin-bottom: 10px;
             line-height: 1.6;
         }
-        
-        /* Календарь */
         .calendar-widget {
             background: white;
             color: #1A1A1A;
@@ -195,21 +195,28 @@ require_once '../inc/functions.php';
         .calendar-day.other-month {
             color: #ccc;
         }
+        @media (max-width: 768px) {
+            .hero-section {
+                flex-direction: column;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
-    <?php include("../blocks/modal.php"); ?>
-
+    <? include("../blocks/modal.php"); ?>
+    
     <div id="main_container">
-        <!-- Шапка -->
-        <?php include("../blocks/header.php"); ?>
-
-        <!-- Hero секция со слайдером -->
+        <? include("../blocks/header.php"); ?>
+        
         <div class="hero-section">
             <div class="hero-slider">
-                <img src="../uploads/hero1.jpg" alt="Стройматериалы" class="hero-slide active">
-                <img src="../uploads/hero2.jpg" alt="Инструменты" class="hero-slide">
-                <img src="../uploads/hero3.jpg" alt="Оборудование" class="hero-slide">
+                <img src="../uploads/hero1.jpg" alt="" class="hero-slide active">
+                <img src="../uploads/hero2.jpg" alt="" class="hero-slide">
+                <img src="../uploads/hero3.jpg" alt="" class="hero-slide">
                 <div class="slider-nav">
                     <span class="slider-dot active" data-slide="0"></span>
                     <span class="slider-dot" data-slide="1"></span>
@@ -221,82 +228,63 @@ require_once '../inc/functions.php';
                 <p id="slide-text">Широкий ассортимент стройматериалов для профессионалов и частных клиентов. Доставка по всей России.</p>
             </div>
         </div>
-
-        <!-- Центральный блок -->
+        
         <div class="central-block">
             <h2>О компании</h2>
             <p>Мы работаем на рынке строительных материалов более 10 лет. Наша миссия — предоставлять качественные материалы по доступным ценам с отличным сервисом.</p>
         </div>
- 
-        <!-- Категории -->
+        
         <div id="main_categories">
             <h1>Каталог</h1>
             <div id="set_categories">
                 <a href="catalog.php?cat=flanec" class="card_categories">
-                    <img src="../image/flange.png" alt="Фланцы">
+                    <img src="../image/flange.png" alt="">
                     <h1>ФЛАНЦЫ</h1>
                     <p>300 товаров</p>
                 </a>
                 <a href="catalog.php?cat=truby" class="card_categories">
-                    <img src="../uploads/pipe.png" alt="Трубы">
+                    <img src="../uploads/pipe.png" alt="">
                     <h1>ТРУБЫ</h1>
                     <p>150 товаров</p>
                 </a>
                 <a href="catalog.php?cat=otvody" class="card_categories">
-                    <img src="../image/flange.png" alt="Отводы">
+                    <img src="../image/flange.png" alt="">
                     <h1>ОТВОДЫ</h1>
                     <p>80 товаров</p>
                 </a>
             </div>
         </div>
-
-        <!-- Популярные товары -->
-        <div id="main_product">
-    <?php
-    $stmt = $pdo->query("SELECT id, name, price, image FROM products ORDER BY id DESC LIMIT 6");
-    while ($p = $stmt->fetch()): ?>
         
+        <div id="main_product">
+            <? $stmt = $pdo->query("SELECT id, name, price, image FROM products ORDER BY id DESC LIMIT 6");
+            while ($p = $stmt->fetch()): ?>
             <form method="POST" class="card_product">
-                
-                    <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                    <div class="product_first">
-                        <a href="product.php?id=<?= $p['id']?>">
+                <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
+                <div class="product_first">
+                    <a href="product.php?id=<?= $p['id']?>">
                         <img src="../uploads/<?= $p['image'] ?: 'no-photo.jpg' ?>" alt="<?= escape($p['name']) ?>">
-                        </a> 
+                    </a>
+                </div>
+                <div class="product_second">
+                    <p><?= escape($p['name']) ?></p>
+                </div>
+                <div class="product_last">
+                    <div class="rating">
+                        <img src="../image/star.svg" alt="">
+                        <h1>4.7</h1>
                     </div>
-                    <div class="product_second">
-                        <p><?= escape($p['name']) ?></p>
-                    </div>
-                    <div class="product_last">
-                        <div class="rating">
-                            <img src="../image/star.svg" alt="">
-                            <h1>4.7</h1>
-                        </div>
-                        <h1><?= number_format($p['price'], 0, '', ' ') ?> ₽</h1>
-                    </div>
-                    <button type="submit" name="add_to_cart" class="add_to_cart_btn">
-                        В корзину
-                    </button>
-                
-            </form> 
-       
-    <?php endwhile; ?>
-</div>
-
-        <!-- Добавление в корзину -->
-        <?php
-        if (isset($_POST['add_to_cart'])) {
-            $id = (int)($_POST['product_id'] ?? 0);
-            if ($id > 0) {
-                add_to_cart($id);
-            }
-        }
-        ?>
-
-        <!-- Подвал с 4 колонками и календарем -->
-        <footer id="container_footer">
+                    <h1><?= number_format($p['price'], 0, '', ' ') ?> ₽</h1>
+                </div>
+                <button type="submit" name="add_to_cart" class="add_to_cart_btn">
+                    В корзину
+                </button>
+            </form>
+            <? endwhile; ?>
+        </div>
+        
+        <footer class="footer-grid">
             <div>
-                <img src="../image/logo.png" alt="Logo">
+                <img src="../image/logo.png" alt="">
                 <p>СтройМастер — ваш надежный партнер в строительстве.</p>
             </div>
             <div>
@@ -327,7 +315,7 @@ require_once '../inc/functions.php';
                     </div>
                     <div class="calendar-current-date">
                         <span id="current-date-display">Mon, Aug 17</span>
-                        <img src="../image/edit.png" alt="Edit" title="Select date">
+                        <img src="../image/edit.png" alt="">
                     </div>
                     <div class="calendar-grid">
                         <div class="calendar-weekday">S</div>
@@ -338,17 +326,14 @@ require_once '../inc/functions.php';
                         <div class="calendar-weekday">F</div>
                         <div class="calendar-weekday">S</div>
                     </div>
-                    <div class="calendar-grid" id="calendar-days">
-                        <!-- Дни генерируются JS -->
-                    </div>
+                    <div class="calendar-grid" id="calendar-days"></div>
                 </div>
             </div>
         </footer>
     </div>
-
+    
     <script src="../js/modal.js"></script>
     <script>
-        // Слайдер
         const slides = document.querySelectorAll('.hero-slide');
         const dots = document.querySelectorAll('.slider-dot');
         const slideTitle = document.getElementById('slide-title');
@@ -380,20 +365,18 @@ require_once '../inc/functions.php';
             });
         });
         
-        // Автопереключение каждые 5 секунд
         setInterval(() => {
             currentSlide = (currentSlide + 1) % slides.length;
             showSlide(currentSlide);
         }, 5000);
         
-        // Календарь
         const calendarDays = document.getElementById('calendar-days');
         const calendarMonthYear = document.getElementById('calendar-month-year');
         const currentDateDisplay = document.getElementById('current-date-display');
         const prevMonthBtn = document.getElementById('prev-month');
         const nextMonthBtn = document.getElementById('next-month');
         
-        let currentMonth = 7; // Август (0-indexed)
+        let currentMonth = 7;
         let currentYear = 2025;
         
         function renderCalendar(month, year) {
@@ -408,19 +391,16 @@ require_once '../inc/functions.php';
             
             let html = '';
             
-            // Дни предыдущего месяца
             for (let i = firstDay - 1; i >= 0; i--) {
                 html += `<div class="calendar-day other-month">${daysInPrevMonth - i}</div>`;
             }
             
-            // Дни текущего месяца
             const today = new Date();
             for (let day = 1; day <= daysInMonth; day++) {
                 const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
                 html += `<div class="calendar-day${isToday ? ' today' : ''}">${day}</div>`;
             }
             
-            // Дни следующего месяца
             const remainingCells = 42 - (firstDay + daysInMonth);
             for (let day = 1; day <= remainingCells; day++) {
                 html += `<div class="calendar-day other-month">${day}</div>`;
@@ -429,7 +409,6 @@ require_once '../inc/functions.php';
             calendarDays.innerHTML = html;
         }
         
-        // Установка текущей даты
         const now = new Date();
         const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
         currentDateDisplay.textContent = now.toLocaleDateString('en-US', dateOptions);

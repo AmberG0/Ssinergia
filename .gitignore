@@ -4,8 +4,9 @@
 __pycache__/
 
 # Dependencies
-vendor/
-composer.lock
+.venv/
+venv/
+node_modules/
 
 # Logs and temp files
 *.log
@@ -20,8 +21,4 @@ composer.lock
 # Editors
 .vscode/
 .idea/
-
-# OS generated files
-.DS_Store
-Thumbs.db
 ```
